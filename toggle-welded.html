@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Component — welded segmented control</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: #eef0f4;
+      color: #1e2b4d;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      padding: 24px;
+    }
+    .doc { max-width: 360px; text-align: center; }
+    .doc h1 { font-size: 1.1rem; margin: 0 0 6px; }
+    .doc p  { font-size: 0.9rem; color: #5f6b80; margin: 0; line-height: 1.5; }
+    .demo-frame { width: 100%; max-width: 320px; }
+  </style>
+</head>
+<body>
+  <div class="doc">
+    <h1>Welded segmented control</h1>
+    <p>A firmer, "locked-in-place" mode selector: the active segment fills its half
+       with squared inner corners, so it reads as welded to the centre seam rather
+       than floating. No motion. Tap to try it.</p>
+  </div>
+
+  <div class="demo-frame">
+
+    <!-- ==== COMPONENT — copy from here ==============================
+         Re-theme via the variables in the .segset scope below.
+         The active side is set by the .is-a / .is-b class on .segset,
+         from the script at the bottom. Each option's OUTER corners are
+         rounded and its INNER (centre-facing) corners are squared, giving
+         the "attached" look. Keep the check span BEFORE the first label
+         and AFTER the second so they mirror.                              -->
+    <div class="segset is-a" role="group" aria-label="Mode">
+      <button class="segset-opt seg-left" data-side="a">
+        <span class="segset-check" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>
+        <span>In order</span>
+      </button>
+      <button class="segset-opt seg-right" data-side="b">
+        <span>Shuffle</span>
+        <span class="segset-check" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>
+      </button>
+    </div>
+
+    <style>
+      .segset {
+        --accent-start: #4a83f0;   /* theme: active fill start */
+        --accent-end:   #5a5fe0;   /* theme: active fill end   */
+        --trough:       #e4e8f0;   /* theme: recessed track    */
+        --label-off:    #8a94a6;   /* theme: inactive label    */
+        --label-on:     #ffffff;   /* theme: active label      */
+        --segset-radius: 14px;
+        --seg-inner: 3px;          /* the squared inner corner (small, not 0, so it still eases into the seam) */
+        display: flex;
+        background: var(--trough);
+        border-radius: var(--segset-radius);
+        padding: 4px;
+        box-shadow: inset 0 1px 3px rgba(30, 43, 77, 0.14);
+      }
+      .segset-opt {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 9px 12px;
+        border: none;
+        background: transparent;
+        font: inherit;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--label-off);
+        cursor: pointer;
+        transition: background 0.18s ease, color 0.18s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .seg-left  { border-radius: calc(var(--segset-radius) - 4px) var(--seg-inner) var(--seg-inner) calc(var(--segset-radius) - 4px); }
+      .seg-right { border-radius: var(--seg-inner) calc(var(--segset-radius) - 4px) calc(var(--segset-radius) - 4px) var(--seg-inner); }
+      .segset.is-a .segset-opt[data-side="a"],
+      .segset.is-b .segset-opt[data-side="b"] {
+        background: linear-gradient(135deg, var(--accent-start), var(--accent-end));
+        color: var(--label-on);
+        box-shadow: 0 1px 4px rgba(30, 43, 77, 0.20);
+      }
+      .segset-check {
+        display: inline-flex;
+        align-items: center;
+        width: 14px;         /* slot reserved on both sides so nothing reflows */
+        opacity: 0;
+        transition: opacity 0.18s ease;
+      }
+      .segset.is-a .segset-opt[data-side="a"] .segset-check,
+      .segset.is-b .segset-opt[data-side="b"] .segset-check { opacity: 1; }
+    </style>
+
+    <script>
+      document.querySelectorAll('.segset').forEach(function (set) {
+        set.querySelectorAll('.segset-opt').forEach(function (opt) {
+          opt.addEventListener('click', function () {
+            var side = opt.getAttribute('data-side');
+            set.classList.toggle('is-a', side === 'a');
+            set.classList.toggle('is-b', side === 'b');
+          });
+        });
+      });
+    </script>
+    <!-- ==== COMPONENT — …to here ==================================== -->
+
+  </div>
+</body>
+</html>
